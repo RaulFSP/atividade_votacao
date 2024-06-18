@@ -1,7 +1,7 @@
 {%extends "base.html"%}
 
 {%block head%} 
-    <title>Votação Home</title>
+    <title>Adicionar Candidato</title>
 {%endblock%}
 
 {%block body%} 
@@ -19,7 +19,27 @@
         {{form.nome()}}
         {{form.cpf.label()}}
         {{form.cpf()}}
-        {{form.submit()}}
+        {{form.submit(value="Cadastrar")}}
         
     </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for candidato in candidatos%}
+            <tr>
+                <td>{{candidato.id}}</td>
+                <td>{{candidato.nome}}</td>
+                <td>{{candidato.cpf}}</td>
+                <td><a href="{{url_for('alterar_candidato',id=candidato.id)}}">Alterar</a></td>
+                <td><a href="{{url_for('deletar_candidato',id=candidato.id)}}">Remover</a></td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
 {%endblock%}

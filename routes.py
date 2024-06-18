@@ -34,4 +34,39 @@ def adicionar_candidato():
         except Exception as e:
             return "Houve um erro ao adicionar um candidato\n"+str(e)
     else:
-        return render_template("adicionar_candidato.html", form=form)
+        candidatos = db.session.execute(db.select(Candidato)).scalars()
+        return render_template("adicionar_candidato.html", form=form, candidatos= candidatos)
+    
+@app.route("/alterar_candidato/<int:id>", methods=['POST','GET'])
+def alterar_candidato(id):
+    form = CandidatoForm()
+    candidato = Candidato.query.get_or_404(id)
+    form.nome.data = candidato.nome
+    form.cpf.data = candidato.cpf
+    if form.validate_on_submit():
+        candidato.nome = form.nome.data
+        candidato.cpf = form.cpf.data
+        try:
+            db.session.commit()
+        except Exception as e:
+            return "Erro na alteração de candidato!\n".format(str(e))
+        flash(f"Candidato '{form.nome.data}' alterado!")
+        return redirect(url_for('adicionar_candidato'))
+    
+    return render_template('alterar_candidato.html',form=form, candidato=candidato)
+    
+        
+
+    
+
+
+@app.route("/deletar_candidato/<int:id>", methods=['POST','GET'])
+def deletar_candidato(id):
+    try:
+        candidato = db.get_or_404(Candidato,id)
+        db.session.delete(candidato)
+        db.session.commit()
+        flash(f"O candidato '{candidato.nome}' foi removido!")
+        return redirect(url_for('adicionar_candidato'))
+    except Exception as e:
+        return "Erro na exclusão de candidato!\n".format(str(e))

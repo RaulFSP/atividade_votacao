@@ -12,15 +12,18 @@
         </div>
         
     {%endfor%}
+    {%if candidatos%}
     <form action="" method="post">
         {%for candidato in candidatos%}
             <div>
                 <p>{{candidato.nome}}</p>
                 <p>{{candidato.cpf}}</p>
                 <input type="radio" name="voto" value="{{candidato.id}}">
-                
             </div>
         {%endfor%}
         <input type="submit" value="Votar">
     </form>
+    {%else%}
+        <p>Não há candidatos</p>
+    {%endif%}
 {%endblock%}
