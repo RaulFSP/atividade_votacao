@@ -6,40 +6,53 @@
 
 {%block body%} 
 {%for message in get_flashed_messages()%}
-    <div class="alert alert-success alert-dismissible show" role="alert">
+    <div class="alert alert-success alert-dismissible show container-sm" role="alert">
     {{message}} 
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     
 {%endfor%}
-    <form action="{{url_for('adicionar_candidato')}}" method="post">
-        
+    
+<h1 class="text-center" >Cadastro de Candidatos</h1>
+    
+    <form action="{{url_for('adicionar_candidato')}}" method="post" class="container-sm d-sm-flex d-flex flex-column mb-3">
+        <fieldset class="container d-sm-flex d-flex flex-column mb-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded">
         {{form.hidden_tag()}}
-        {{form.nome.label()}}
-        {{form.nome()}}
-        {{form.cpf.label()}}
-        {{form.cpf()}}
-        {{form.submit(value="Cadastrar")}}
         
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.nome.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.nome(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.cpf.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.cpf(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        
+        {{form.submit(value='Cadastrar', class_='btn btn-outline-secondary align-self-center')}}
+    </fieldset>
     </form>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>CPF</th>
-            </tr>
-        </thead>
-        <tbody>
-            {%for candidato in candidatos%}
-            <tr>
-                <td>{{candidato.id}}</td>
-                <td>{{candidato.nome}}</td>
-                <td>{{candidato.cpf}}</td>
-                <td><a href="{{url_for('alterar_candidato',id=candidato.id)}}">Alterar</a></td>
-                <td><a href="{{url_for('deletar_candidato',id=candidato.id)}}">Remover</a></td>
-            </tr>
-            {%endfor%}
-        </tbody>
-    </table>
+    {%if candidatos%}
+        <table class="table table-striped table-hover container" >
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for candidato in candidatos%}
+                <tr>
+                    <td>{{candidato.id}}</td>
+                    <td>{{candidato.nome}}</td>
+                    <td>{{candidato.cpf}}</td>
+                    <td><a href="{{url_for('alterar_candidato',id=candidato.id)}}">Alterar</a></td>
+                    <td><a href="{{url_for('deletar_candidato',id=candidato.id)}}">Remover</a></td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    {%else%}
+        <p>Não há candidatos registrados!</p>
+    {%endif%}
 {%endblock%}

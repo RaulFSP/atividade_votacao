@@ -1,0 +1,47 @@
+{%extends "base.html"%}
+
+{%block head%} 
+    <title>Adicionar Usuário</title>
+{%endblock%}
+
+{%block body%} 
+
+{%for message in get_flashed_messages()%}
+    <div class="alert alert-success alert-dismissible show container-sm" role="alert">
+    {{message}} 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+{%endfor%}
+    
+<h1 class="text-center" >Cadastro de Usuários</h1>
+    
+    <form action="{{url_for('adicionar_usuario')}}" method="post" class="container-sm d-sm-flex d-flex flex-column mb-3">
+        <fieldset class="container d-sm-flex d-flex flex-column mb-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+        {{form.hidden_tag()}}
+        
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.nome.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.nome(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.cpf.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.cpf(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.username.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.username(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.email.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.email(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.password.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.password(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+        {{form.submit(value='Cadastrar', class_='btn btn-outline-secondary align-self-center')}}
+        </fieldset>
+    </form>
+    
+{%endblock%}

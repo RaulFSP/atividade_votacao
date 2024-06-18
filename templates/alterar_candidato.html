@@ -16,9 +16,9 @@
         
         {{form.hidden_tag()}}
         {{form.nome.label()}}
-        {{form.nome()}}
+        {{form.nome(value=candidato.nome)}}
         {{form.cpf.label()}}
-        {{form.cpf()}}
+        {{form.cpf(value=candidato.cpf)}}
         {{form.submit(value="Alterar")}}
         
     </form>
