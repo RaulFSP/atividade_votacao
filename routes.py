@@ -1,9 +1,9 @@
 from app import app, db, login_manager
 from flask import Flask, render_template, flash, redirect, url_for, request
-from forms import CandidatoForm, UsuarioForm, UsuarioLoginForm
-from models import Candidato, Usuario
+from forms import CandidatoForm, UsuarioForm, UsuarioLoginForm, EleitorForm
+from models import Candidato, Usuario, Eleitor
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
-
+from werkzeug.utils import secure_filename
 
 
 # flask login
@@ -36,11 +36,15 @@ def adicionar_candidato():
     form = CandidatoForm()
     nome = None
     cpf = None
+    imagem = None
+    name = None
     if form.validate_on_submit():
         nome = form.nome.data
         cpf = form.cpf.data
+        name = secure_filename(form.img.data.filename)
+        imagem = form.img.data.read()
         try:
-            candidato = Candidato(nome=nome,cpf=cpf)
+            candidato = Candidato(nome=nome,cpf=cpf, img=imagem, img_name=name)
             db.session.add(candidato)
             db.session.commit()
             flash(f"candidato {candidato.nome} Foi adicionado!")
@@ -49,8 +53,9 @@ def adicionar_candidato():
             return "Houve um erro ao adicionar um candidato\n"+str(e)
     else:
         candidatos = db.session.execute(db.select(Candidato)).scalars()
-        return render_template("adicionar_candidato.html", form=form, candidatos= candidatos)
-    
+        return render_template("adicionar_candidato.html", form=form, candidatos= candidatos)    
+
+
 @app.route("/alterar_candidato/<int:id>", methods=['POST','GET'])
 @login_required
 def alterar_candidato(id):
@@ -83,6 +88,32 @@ def deletar_candidato(id):
 
 
 
+
+
+
+
+
+
+#Rotas de CRUD do eleitor
+
+@app.route("/adicionar_eleitor", methods=['POST','GET'])
+@login_required
+def adicionar_eleitor():
+    form = EleitorForm()
+    cpf = None
+    if form.validate_on_submit():
+        cpf = form.cpf.data
+        try:
+            eleitor = Eleitor(cpf=cpf)
+            db.session.add(eleitor)
+            db.session.commit()
+            flash(f"Um eleitor foi adicionado!")
+            return redirect(url_for('adicionar_eleitor'))
+        except Exception as e:
+            return "Houve um erro ao adicionar um eleitor\n"+str(e)
+    else:
+        eleitores = db.session.execute(db.select(Eleitor)).scalars()
+        return render_template("adicionar_eleitor.html", form=form, eleitores= eleitores)
 
 
 

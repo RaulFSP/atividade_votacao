@@ -28,6 +28,11 @@
             {{form.cpf(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
         </div>
         
+        <div class="input-group input-group-sm mb-3 container">
+            {{form.imagem.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.imagem(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+        </div>
+
         {{form.submit(value='Cadastrar', class_='btn btn-outline-secondary align-self-center')}}
     </fieldset>
     </form>
