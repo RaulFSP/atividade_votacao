@@ -1,0 +1,30 @@
+{%extends "base.html"%}
+
+{%block head%}
+<title>Contagem</title>
+{%endblock%}
+
+{%block body%}
+
+<table class="table table-striped container">
+    <thead>
+        <tr>
+            <th>Candidato</th>
+            <th>Votos</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%for resultado in resultados%}
+    <tr>
+        <td>
+            {{resultado.nome}}
+        </td>
+        <td>
+            {{resultado.votos}}
+        </td>
+    </tr>
+    {%endfor%}
+</tbody>
+</table>
+
+{%endblock%}

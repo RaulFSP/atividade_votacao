@@ -13,18 +13,36 @@
         </div>
         
     {%endfor%}
-    {%if candidatos%}
-    <form action="" method="post">
+
+    {%if candidatos %}
+    <form action="" method="post" class="" style="max-width: 768px; margin: auto;">
+    <fieldset class="d-flex flex-row mb-3 justify-content-center" style="gap: 20px; display: block;">
         {%for candidato in candidatos%}
-            <div>
-                <p>{{candidato.nome}}</p>
-                <p>{{candidato.cpf}}</p>
-                <input type="radio" name="voto" value="{{candidato.id}}">
+            <div class="p-2 d-flex flex-column border shadow p-3 mb-5 bg-body-tertiary rounded">
+                
+                <p style="text-align: center;">{{candidato.nome}}</p>
+                
+                <img src="{{url_for('static',filename='images/{}'.format(candidato.img_name))}}" alt="" width="125px" height="125px">
+                
+                <br>
+                <input type="radio" name="voto" value="{{candidato.id}}" style="display: block;" checked>
             </div>
         {%endfor%}
-        <input type="submit" value="Votar">
+    </fieldset>
+    <input type="submit" value="Votar" style="display: block; margin: auto;" class="btn btn-warning" onclick="playAudio()">
     </form>
     {%else%}
         <p>Não há candidatos</p>
     {%endif%}
+    <audio id="som">
+        <source src="../static/som.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        var x = document.getElementById("som"); 
+    
+    function playAudio() { 
+        x.play(); 
+    } 
+    </script>
 {%endblock%}
+

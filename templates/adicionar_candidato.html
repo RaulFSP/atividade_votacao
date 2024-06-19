@@ -15,7 +15,7 @@
     
 <h1 class="text-center" >Cadastro de Candidatos</h1>
     
-    <form action="{{url_for('adicionar_candidato')}}" method="post" class="container-sm d-sm-flex d-flex flex-column mb-3">
+    <form action="{{url_for('adicionar_candidato')}}" method="post" class="container-sm d-sm-flex d-flex flex-column mb-3" enctype="multipart/form-data">
         <fieldset class="container d-sm-flex d-flex flex-column mb-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded">
         {{form.hidden_tag()}}
         
@@ -29,8 +29,9 @@
         </div>
         
         <div class="input-group input-group-sm mb-3 container">
-            {{form.imagem.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
-            {{form.imagem(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+            {{form.img.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+            {{form.img(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm')}}
+            
         </div>
 
         {{form.submit(value='Cadastrar', class_='btn btn-outline-secondary align-self-center')}}

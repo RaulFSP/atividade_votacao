@@ -1,9 +1,18 @@
 from app import app, db, login_manager
 from flask import Flask, render_template, flash, redirect, url_for, request
 from forms import CandidatoForm, UsuarioForm, UsuarioLoginForm, EleitorForm
-from models import Candidato, Usuario, Eleitor
+from models import Candidato, Usuario, Eleitor, Voto
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
+from PIL import Image
+from io import BytesIO
+import os
+from pydub import AudioSegment
+
+
+
+
+
 
 
 # flask login
@@ -17,13 +26,19 @@ def load_user(id):
 
 
 # rota index
-@app.route("/")
+@app.route("/", methods=['POST','GET'])
 def index():
-    try:
-        candidatos = db.session.execute(db.select(Candidato)).scalars()
+    escolhido = None
+    if request.method == "POST":
+        escolhido = request.form['voto']
+        voto = Voto(id_candidato=escolhido)
+        db.session.add(voto)
+        db.session.commit()
+        return render_template('voto_realizado.html')
+    else:
+        candidatos = Candidato.query.all()
         return render_template("index.html",candidatos=candidatos)
-    except Exception as e:
-        return "Houve um erro com o index\n"+str(e)
+    
 
 
 
@@ -37,14 +52,15 @@ def adicionar_candidato():
     nome = None
     cpf = None
     imagem = None
-    name = None
+    
     if form.validate_on_submit():
         nome = form.nome.data
         cpf = form.cpf.data
-        name = secure_filename(form.img.data.filename)
-        imagem = form.img.data.read()
+        imagem = form.img.data
+        imagem_nome = secure_filename(form.img.data.filename)
+        imagem.save('static/images/'+imagem_nome)
         try:
-            candidato = Candidato(nome=nome,cpf=cpf, img=imagem, img_name=name)
+            candidato = Candidato(nome=nome, cpf=cpf, img=imagem.read(), img_name=imagem_nome)
             db.session.add(candidato)
             db.session.commit()
             flash(f"candidato {candidato.nome} Foi adicionado!")
@@ -52,8 +68,9 @@ def adicionar_candidato():
         except Exception as e:
             return "Houve um erro ao adicionar um candidato\n"+str(e)
     else:
-        candidatos = db.session.execute(db.select(Candidato)).scalars()
-        return render_template("adicionar_candidato.html", form=form, candidatos= candidatos)    
+        candidatos = Candidato.query.all()
+        
+        return render_template("adicionar_candidato.html", form=form, candidatos = candidatos)    
 
 
 @app.route("/alterar_candidato/<int:id>", methods=['POST','GET'])
@@ -64,6 +81,8 @@ def alterar_candidato(id):
     if form.validate_on_submit():
         candidato.nome = form.nome.data
         candidato.cpf = form.cpf.data
+        candidato.img = form.img.data
+        candidato.img_name = secure_filename(form.img.data.filename)
         try:
             db.session.commit()
             flash(f"Candidato {candidato.nome} foi alterado!")
@@ -112,7 +131,7 @@ def adicionar_eleitor():
         except Exception as e:
             return "Houve um erro ao adicionar um eleitor\n"+str(e)
     else:
-        eleitores = db.session.execute(db.select(Eleitor)).scalars()
+        eleitores = Eleitor.query.all()
         return render_template("adicionar_eleitor.html", form=form, eleitores= eleitores)
 
 
@@ -139,14 +158,23 @@ def adicionar_usuario():
             db.session.add(usuario)
             db.session.commit()
             flash(f"O usuário {usuario.nome} Foi adicionado!")
-            return redirect(url_for('adicionar_usuario'))
+            return redirect(url_for('login'))
         except Exception as e:
             return "Houve um erro ao adicionar um usuário\n"+str(e)
     else:
         return render_template("adicionar_usuario.html", form=form)
     
 
-
+@app.route('/listar_votos')
+@login_required
+def listar_votos():
+    try:
+        query = Voto.query.join(Candidato, Voto.id_candidato == Candidato.id)
+        query = query.with_entities(Candidato.nome, db.func.count(Voto.id_candidato).label('votos'))
+        resultados = query.group_by(Candidato.nome).order_by(Candidato.nome).all()
+        return render_template('total_votos.html',resultados=resultados)
+    except Exception as e:
+        return str(e)
 
 
 

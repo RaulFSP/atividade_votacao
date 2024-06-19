@@ -12,15 +12,27 @@
     </div>
     
 {%endfor%}
-    <form action="{{url_for('alterar_candidato',id=candidato.id)}}" method="post">
-        
-        {{form.hidden_tag()}}
-        {{form.nome.label()}}
-        {{form.nome(value=candidato.nome)}}
-        {{form.cpf.label()}}
-        {{form.cpf(value=candidato.cpf)}}
-        {{form.submit(value="Alterar")}}
-        
+    <form action="{{url_for('alterar_candidato',id=candidato.id)}}" method="post" class="container-sm d-sm-flex d-flex flex-column mb-3" enctype="multipart/form-data">
+        <fieldset class="container d-sm-flex d-flex flex-column mb-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+            {{form.hidden_tag()}}
+            
+            <div class="input-group input-group-sm mb-3 container">
+                {{form.nome.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+                {{form.nome(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm', value=candidato.nome)}}
+            </div>
+            <div class="input-group input-group-sm mb-3 container">
+                {{form.cpf.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+                {{form.cpf(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm', value=candidato.cpf)}}
+            </div>
+            
+            <div class="input-group input-group-sm mb-3 container">
+                {{form.img.label(class_='input-group-text', id='inputGroup-sizing-sm')}}
+                {{form.img(class_='form-control', aria_label='Sizing example input', aria_describedby='inputGroup-sizing-sm', value=candidato.img_name)}}
+                
+            </div>
+    
+            {{form.submit(value='Alterar', class_='btn btn-outline-secondary align-self-center')}}
+        </fieldset>
     </form>
 
 {%endblock%}
